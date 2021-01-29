@@ -19,7 +19,7 @@ class App {
 	 * @param string $directory [directory path]
 	 * @return void
 	 */
-	protected function autoload(string $prefix, string $directory) {
+	protected function autoload(string $prefix, string $directory): void {
 		spl_autoload_register(function($classname_string) use($prefix, $directory) {
             // Check if the prefix characters match, else return
             if (strncmp($prefix, $classname_string, strlen($prefix)) !== 0) return;
@@ -57,7 +57,7 @@ class App {
 	 * @access protected
 	 * @return void
 	 */
-	protected function setup_autoloads() {
+	protected function setup_autoloads(): void {
 		$autoloads = [
 			'core_classes' => [
 				'namespace' => 'App',
@@ -81,7 +81,7 @@ class App {
 	 * @access protected
 	 * @return void
 	 */
-	protected function setup_defines() {
+	protected function setup_defines(): void {
 		define('ROOT_DIRECTORY', realpath(dirname(__DIR__, 1)).DIRECTORY_SEPARATOR);
 		define('APP_DIRECTORY', realpath(ROOT_DIRECTORY.'app').DIRECTORY_SEPARATOR);
 		define('PUBLIC_DIRECTORY', realpath(ROOT_DIRECTORY.'public').DIRECTORY_SEPARATOR);
@@ -100,10 +100,12 @@ class App {
 	 * @access protected
 	 * @return void
 	 */
-	protected function setup_routes() {
+	protected function setup_routes(): void {
 		// Initiate Router
 	    $router = new App\Router();
+	    // include our route definitions
 		include CORE_DIRECTORY.'Routes.php';
+		// run the router
 	    $router->run();
 	}
 }
