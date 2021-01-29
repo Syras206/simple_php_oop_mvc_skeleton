@@ -38,6 +38,10 @@ class Auth extends \App\Controller {
 		$view = self::load_view('Auth/login', 'Layout/standard');
 		$view->title = 'Login';
 
+		$posted_data = $data['data'] ?? [];
+
+		// this is where you do something with your posted data
+
 		$view->render([
 			// add any data for the view here
 		]);
