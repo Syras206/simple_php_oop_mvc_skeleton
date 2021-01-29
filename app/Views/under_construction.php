@@ -1,0 +1,3 @@
+<?php if (!defined('APP')) { exit; } ?>
+
+Under Construction page content goes here...
