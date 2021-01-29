@@ -31,9 +31,10 @@ class Auth extends \App\Controller {
 	 *
 	 * @access public
 	 * @static
+	 * @param array $data (default: [])
 	 * @return void
 	 */
-	public static function process_login(): void {
+	public static function process_login(array $data = []): void {
 		$view = self::load_view('Auth/login', 'Layout/standard');
 		$view->title = 'Login';
 
