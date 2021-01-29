@@ -85,7 +85,7 @@ class App {
 		define('ROOT_DIRECTORY', realpath(dirname(__DIR__, 1)).DIRECTORY_SEPARATOR);
 		define('APP_DIRECTORY', realpath(ROOT_DIRECTORY.'app').DIRECTORY_SEPARATOR);
 		define('PUBLIC_DIRECTORY', realpath(ROOT_DIRECTORY.'public').DIRECTORY_SEPARATOR);
-		define('APP', 'trainee-blog');
+		define('APP', 'skeleton');
 
 		define('CORE_DIRECTORY', realpath(APP_DIRECTORY.'Core').DIRECTORY_SEPARATOR);
 		define('MODELS_DIRECTORY', realpath(APP_DIRECTORY.'Models').DIRECTORY_SEPARATOR);
