@@ -10,7 +10,6 @@ class View {
 	private $data = [];
 	private $template = '';
 	private $view_path;
-	protected $directory_path = VIEWS_DIRECTORY;
 	public $title = '';
 
 	function __construct($view_path) {
@@ -61,7 +60,7 @@ class View {
 	 */
 	public function partial(string $partial, $options = []) {
 		$data = array_merge($this->get_data(), $options);
-		$partial_path = $this->directory_path.$partial.'.php';
+		$partial_path = VIEWS_DIRECTORY.$partial.'.php';
 
 		return $this->capture_page($partial_path, $data);
 	}

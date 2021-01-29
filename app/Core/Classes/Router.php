@@ -9,14 +9,12 @@ if (!defined('APP')) { exit; }
  */
 class Router {
 	private $_404 = '';
-	private $controllers_namespace = '\App\Controllers\\';
 	private $routes = [
 		'delete' => [],
 		'get' => [],
 		'post' => [],
 		'put' => [],
 	];
-	private $request = null;
 
 	/**
 	 * Call the function linked to the route url. Find a controller-method pair if given.
@@ -30,7 +28,7 @@ class Router {
 		if (strrpos($function, '@')) {
 			// split the function string by the @ symbol into an array [$controller, $method]
 			list($controller, $method) = explode('@', $function);
-			$controller = $this->controllers_namespace.$controller;
+			$controller = '\App\Controllers\\'.$controller;
 
 			// check if the controller and method exist
 			if (class_exists($controller) && method_exists($controller, $method)) {

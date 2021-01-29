@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('APP')) { exit; }
 
 // 404
