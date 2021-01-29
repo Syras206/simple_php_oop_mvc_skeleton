@@ -33,7 +33,6 @@ class Say_Hello extends \App\Controller {
 	 * @access public
 	 * @static
 	 * @param array $data
-	 * @param int $times
 	 * @return void
 	 */
 	public static function say_hello_times(array $data): void {
