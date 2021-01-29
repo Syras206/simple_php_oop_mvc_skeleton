@@ -8,23 +8,18 @@ if (!defined('APP')) { exit; }
  * Set up routes to direct page access requests.
  */
 class Router {
-	private $_404 = '';
-	private $routes = [
-		'delete' => [],
-		'get' => [],
-		'post' => [],
-		'put' => [],
-	];
+	private $e404;
+	private $routes = [];
 
 	/**
 	 * Call the function linked to the route url. Find a controller-method pair if given.
 	 *
 	 * @access private
-	 * @param  mixed   $function
+	 * @param  string   $function
 	 * @param  array    $paramaters
 	 * @return void
 	 */
-	private function call($function, array $paramaters = []): void {
+	private function call(string $function, array $paramaters = []): void {
 		if (strrpos($function, '@')) {
 			// split the function string by the @ symbol into an array [$controller, $method]
 			list($controller, $method) = explode('@', $function);
@@ -34,77 +29,53 @@ class Router {
 			if (class_exists($controller) && method_exists($controller, $method)) {
 				// we have a match, call the method
 
-				$controller::$method($paramaters);
+				$controller::init()->$method($paramaters);
 			}
 		}
+	}
+
+	/**
+	 * Return an array of accepted methods
+	 *
+	 * @access protected
+	 * @return array
+	 */
+	protected function const_accepted_methods(): array {
+		return [
+			'GET',
+			'DELETE',
+			'POST',
+			'PUT',
+		];
 	}
 
 	/**
 	 * Set a custom 404 function
 	 *
 	 * @access public
-	 * @param  mixed   $function
+	 * @param  string   $function
 	 * @return void
 	 */
-	public function custom_404($function): void {
-		$this->_404 = $function;
+	public function custom_404(string $function): void {
+		$this->e404 = $function;
 	}
 
 	/**
-	 * Set the delete routes in a $routes array
+	 * Set the route in the $routes array
 	 *
 	 * @access public
+	 * @param  string   $method_type
 	 * @param  string   $url
-	 * @param  mixed   $function
+	 * @param  string   $function
+	 * @param  array   $options
 	 * @return void
 	 */
-	public function delete(string $url, $function): void {
-		$this->routes['delete'][] = [
-			'url' => $url,
-			'function' => $function,
-		];
-	}
+	public function set_route(string $method_type, string $url, string $function, array $options = []): void {
+		if (array_key_exists('role', $options)) {
+			// check user role permissions
+		}
 
-	/**
-	 * Set the get routes in a $routes array
-	 *
-	 * @access public
-	 * @param  string   $url
-	 * @param  mixed   $function
-	 * @return void
-	 */
-	public function get(string $url, $function): void {
-		$this->routes['get'][] = [
-			'url' => $url,
-			'function' => $function,
-		];
-	}
-
-	/**
-	 * Set the post routes in a $routes array
-	 *
-	 * @access public
-	 * @param  string   $url
-	 * @param  mixed   $function
-	 * @return void
-	 */
-	public function post(string $url, $function): void {
-		$this->routes['post'][] = [
-			'url' => $url,
-			'function' => $function,
-		];
-	}
-
-	/**
-	 * Set the put routes in a $routes array
-	 *
-	 * @access public
-	 * @param  string   $url
-	 * @param  mixed   $function
-	 * @return void
-	 */
-	public function put(string $url, $function): void {
-		$this->routes['put'][] = [
+		$this->routes[$method_type][] = [
 			'url' => $url,
 			'function' => $function,
 		];
@@ -120,9 +91,9 @@ class Router {
 		$success = false;
 
 		// loop through our routes looking for a match
-		foreach (['get', 'delete', 'post', 'put'] as $method_type) {
-			foreach ($this->routes[$method_type] as $route) {
-				$match = $this->find_match($route['url'], $method_type);
+		foreach ($this->const_accepted_methods() as $method) {
+			foreach ($this->routes[$method] as $route) {
+				$match = $this->find_match($route['url'], $method);
 				if ($match['success'] !== true) continue;
 
 				// if we get to this point it means we found a match. Now lets try and call the router and method
@@ -132,7 +103,7 @@ class Router {
 		}
 
 		// no match found so show our 404 page
-		if ($success === false) $this->call($this->_404);
+		if ($success === false) $this->call($this->e404);
 	}
 
 	/**
@@ -147,7 +118,7 @@ class Router {
 		$rtn = $paramaters = [];
 
 		// check if the route method type is the same as the current request method
-		if ($method_type != strtolower($_SERVER['REQUEST_METHOD'])) return ['success' => false];
+		if ($method_type != $_SERVER['REQUEST_METHOD']) return ['success' => false];
 
 		// split our current request url by '/' into an array of url parts
 		$current_url = explode('/', parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH));
@@ -176,6 +147,35 @@ class Router {
 			'paramaters' => array_filter($paramaters),
 			'success' => true,
 		];
+	}
+
+	/**
+	 * Magic method used to add routes using router->{{get/post/pull/delete}}()
+	 *
+	 * @access public
+	 * @param  string  	$function_name
+	 * @param  array   	$arguments
+	 * @return void
+	 */
+	public function __call(string $function_name, array $arguments): void {
+		if (in_array(strtoupper($function_name), $this->const_accepted_methods())) {
+			// this is one of our accepted methods, so extract the arguments
+			$route = array_shift($arguments);
+			$function = array_shift($arguments);
+			$options = array_shift($arguments);
+
+			// call our set route function
+			$this->set_route(strtoupper($function_name), $route, $function, $options ?? []);
+		};
+	}
+
+	/**
+	 * Set everything up for our router
+	 * @access public
+	 */
+	function __construct() {
+		// fill our routes array with accepted methods
+		foreach ($this->const_accepted_methods() as $method) $this->routes[$method] = [];
 	}
 
 }

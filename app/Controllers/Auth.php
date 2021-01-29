@@ -8,16 +8,14 @@ if (!defined('APP')) { exit; }
  */
 class Auth extends \App\Controller {
 
-
 	/**
 	 * [GET] -- render view file within a template
 	 *
 	 * @access public
-	 * @static
 	 * @return void
 	 */
-	public static function login(): void {
-		$view = self::load_view('Auth/login', 'Layout/standard');
+	public function login(): void {
+		$view = $this->load_view('Auth/login', 'Layout/standard');
 		$view->title = 'Login';
 
 		$view->render([
@@ -25,17 +23,15 @@ class Auth extends \App\Controller {
 		]);
 	}
 
-
 	/**
 	 * [POST] -- render view file within a template
 	 *
 	 * @access public
-	 * @static
 	 * @param array $data (default: [])
 	 * @return void
 	 */
-	public static function process_login(array $data = []): void {
-		$view = self::load_view('Auth/login', 'Layout/standard');
+	public function process_login(array $data = []): void {
+		$view = $this->load_view('Auth/login', 'Layout/standard');
 		$view->title = 'Login';
 
 		$posted_data = $data['data'] ?? [];
@@ -51,11 +47,10 @@ class Auth extends \App\Controller {
 	 * [GET] -- render view file within a template
 	 *
 	 * @access public
-	 * @static
 	 * @return void
 	 */
-	public static function logout(): void {
-		$view = self::load_view('Auth/logout', 'Layout/standard');
+	public function logout(): void {
+		$view = $this->load_view('Auth/logout', 'Layout/standard');
 		$view->title = 'Logout';
 
 		$view->render([
@@ -67,11 +62,10 @@ class Auth extends \App\Controller {
 	 * [GET] -- render view file within a template
 	 *
 	 * @access public
-	 * @static
 	 * @return void
 	 */
-	public static function register(): void {
-		$view = self::load_view('Auth/register', 'Layout/standard');
+	public function register(): void {
+		$view = $this->load_view('Auth/register', 'Layout/standard');
 		$view->title = 'Register';
 
 		$view->render([

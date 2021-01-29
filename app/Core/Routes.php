@@ -14,7 +14,8 @@ $router->get('/hello/::name::/times/::num_times::', 'Say_Hello@say_hello_times')
 // login
 $router->get('/login', 'Auth@login');
 $router->post('/login', 'Auth@process_login');
-$router->get('/logout', 'Auth@logout');
+
+$router->get('/admin', 'Auth@logout', ['role' => 'admin']);
 
 // register
 $router->get('/register', 'Auth@register');

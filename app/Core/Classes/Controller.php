@@ -10,6 +10,7 @@ use App\View;
  * Set up controllers to load views and templates.
  */
 class Controller {
+
 	public static $controller = NULL;
 
 	/**
@@ -20,7 +21,10 @@ class Controller {
 	 * @param mixed $options [default: []]
 	 */
 	public static function init(array $options = []) {
-	  	if (self::$controller == NULL) self::$controller = new self();
+	  	if (self::$controller == NULL) {
+			$model_class = get_called_class();
+	  		self::$controller = new $model_class($options);
+	  	}
 
 		return self::$controller;
 	}
@@ -33,7 +37,7 @@ class Controller {
 	 * @param string $template_file [default: '']
 	 * @return ?View
 	 */
-	public static function load_view(string $view_file, string $template_file = ''): ?View {
+	public function load_view(string $view_file, string $template_file = ''): ?View {
 		// check the view exists
 		$view_path = VIEWS_DIRECTORY.$view_file.'.php';
 		if (!file_exists($view_path)) return null;
@@ -50,4 +54,5 @@ class Controller {
 
 		return $view;
 	}
+
 }
